@@ -1,24 +1,47 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 
-const API_BAE_URL = 'https://deckofcardsapi.com/api/deck'
+const proxy = 'https://cors-anywhere.herokuapp.com/' //CORS error fix
+const API_BASE_URL = 'https://deckofcardsapi.com/api/deck'
 
 class Deck extends Component {
   state = {
-    deck: null
+    deck: null,
+    drawn: []
   }
 
   async componentDidMount() {
-    let deck = await axios.get(`${API_BAE_URL}/new/shuffle`)
+    let deck = await axios.get(`${proxy}${API_BASE_URL}/new/shuffle/`)
     this.setState({ deck: deck.data })
   }
 
   getCard = async () => {
     // make request using deck id
-    let id = this.state.deck.deck.id
-    let cardUrl = `${API_BAE_URL}/${id}draw/`
-    let cardRes = await axios.get(cardUrl)
-    console.log(cardRes);
+    let id = this.state.deck.deck_id
+
+    try {
+      let cardUrl = `${proxy}${API_BASE_URL}/${id}/draw/`
+      let cardResponse = await axios.get(cardUrl)
+
+      if (!cardResponse.data.success) {
+        throw new Error('No cards remaining!') // Display error once all cards have been drawn
+      }
+
+      let card = cardResponse.data.cards[0]
+
+      this.setState({
+        drawn: [
+          ...this.state.drawn,
+          {
+            id: card.code,
+            image: card.image,
+            name: `${card.value} of ${card.suit} `
+          }
+        ]
+      })
+    } catch (err) {
+      alert(err)
+    }
   }
 
   render() {
