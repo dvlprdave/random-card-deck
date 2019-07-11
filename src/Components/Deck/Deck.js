@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import Card from '../Card/Card';
+import './Deck.css'
 
 const proxy = 'https://cors-anywhere.herokuapp.com/' //CORS error fix
 const API_BASE_URL = 'https://deckofcardsapi.com/api/deck'
@@ -40,15 +42,19 @@ class Deck extends Component {
         ]
       })
     } catch (err) {
-      alert(err)
+      alert(err) //TODO: Display styled error message 
     }
   }
 
   render() {
+    const cards = this.state.drawn.map(card => (
+      <Card key={card.id} name={card.name} image={card.image} />
+    ))
     return (
       <div>
         <h1>Card Dealer</h1>
         <button onClick={this.getCard}>Get Card!</button>
+        <div className='Deck-cardarea'>{cards}</div>
       </div>
     );
   }
