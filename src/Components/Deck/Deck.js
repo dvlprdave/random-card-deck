@@ -26,7 +26,7 @@ class Deck extends Component {
       let cardResponse = await axios.get(cardUrl)
 
       if (!cardResponse.data.success) {
-        throw new Error('No cards remaining!') // Display error once all cards have been drawn
+        throw new Error('No cards remaining. You finished the deck!') // Display error once all cards have been drawn
       }
 
       let card = cardResponse.data.cards[0]
@@ -51,9 +51,10 @@ class Deck extends Component {
       <Card key={card.id} name={card.name} image={card.image} />
     ))
     return (
-      <div>
-        <h1>Card Dealer</h1>
-        <button onClick={this.getCard}>Get Card!</button>
+      <div className='Deck'>
+        <h1 className='Deck-title'>♦ Card Dealer ♦</h1>
+        <h2 className='Deck-title subtitle'>♦ Demo made with React ♦</h2>
+        <button className='Deck-btn' onClick={this.getCard}>Get Card!</button>
         <div className='Deck-cardarea'>{cards}</div>
       </div>
     );
